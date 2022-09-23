@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 function App() {
+  const url = '/api'
+  const [backendData, setBackendData] = useState ([{}])
+  useEffect (() => {
+    axios
+    .get(url)
+        .then((res) => {
+          console.log(res.data);
+          setBackendData (res.data)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  }, [/* empty array to ensure this only runs once, on initial render*/])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Best Car Deals</h1>
+      <h2>Tesla</h2>
+      {(typeof backendData.cars === 'undefined') ? (
+        <p>Loading...</p>
+      ) : (
+        backendData.cars.map ((car, i) => (
+          <p key={i}>{car}</p>
+        ))
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
