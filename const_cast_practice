@@ -1,0 +1,47 @@
+// a brief exploration of const_cast casting for personal clarity
+#include <iostream>
+#include <string>
+using namespace std;
+
+int doOperationOnPtrAndReturnLocalValueInVariable(int* ptr)
+{
+    return (*ptr + 10);
+}
+
+void doOperationOnPtrAndStoreInPtr(int* ptr)
+{
+    *ptr += 10;
+}
+  
+int main(void)
+{
+    // val exists in local scope
+    const int val = 10;
+    
+    // ptr is a memory pointer that retrieves its value from a const local int
+    const int *ptr = &val;
+    
+    // const_cast_ptr is a memory pointer that points to a const memory pointer
+    // that which it points to cannot change value except through local variable, which is also const so no ability to change value
+    int *const_cast_ptr = const_cast <int *>(ptr);
+    
+    // through const_cast_ptr, ccp can start from the value of a const pointer pointing to a local variable and create a new pointer that
+    // is mutable. The existing const pointer and local variable remain immutable.
+    cout << "doOperationOnPtrAndReturnLocalValueInVariable(const_cast_ptr) : " << doOperationOnPtrAndReturnLocalValueInVariable(const_cast_ptr) << "\n";
+    cout << "*ptr : " << *ptr << "\n";
+    cout << "val : " << val << "\n";
+    
+    // note that const_cast_ptr here retains the value unmodified, but is temporarily modified by operations
+    cout << "const_cast_ptr : " << *const_cast_ptr << "\n";
+    
+    
+    // again, except we do modify the const_cast_ptr and ptr; an immutable & mutable object are updated. The local variable remains const
+    cout << "doOperationOnPtrAndStoreInPtr(const_cast_ptr) : ";
+    doOperationOnPtrAndStoreInPtr(const_cast_ptr);
+    cout << "const_cast_ptr : " << *const_cast_ptr << "\n";
+    cout << "*ptr : " << *ptr << "\n";
+    cout << "val : " << val << "\n";
+    
+    cout << "const_cast_ptr : " << *const_cast_ptr << "\n";
+    return 0;
+}
